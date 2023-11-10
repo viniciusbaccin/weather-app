@@ -1,13 +1,19 @@
 <template>
-    <q-page class="flex column">
+    <q-page class="flex column" :class="bgClass">
         <div class="col q-pt-lg q-px-md">
-            <q-input v-model="search" placeholder="Pesquisar" dark borderless>
+            <q-input
+                v-model="search"
+                @keyup.enter="getWeatherBySearch"
+                placeholder="Pesquisar"
+                dark
+                borderless
+            >
                 <template v-slot:before>
                     <q-icon @click="getLocation" name="my_location" />
                 </template>
 
                 <template v-slot:append>
-                    <q-btn round dense flat icon="search" />
+                    <q-btn @click="getWeatherBySearch" round dense flat icon="search" />
                 </template>
             </q-input>
         </div>
@@ -36,8 +42,11 @@
 
         <template v-else>
             <div class="col column text-center text-white">
-                <div class="col text-h2 text-weight-thin">
-                    Quasar<br />Weather
+                <div
+                    class="col text-h3 text-weight-thin"
+                    style="text-transform: uppercase"
+                >
+                    Previsão<br />do Tempo
                 </div>
                 <q-btn @click="getLocation" class="col" flat>
                     <q-icon left size="3em" name="my_location" />
@@ -55,6 +64,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
     name: "IndexPage",
+
     data() {
         return {
             search: "",
@@ -66,8 +76,23 @@ export default defineComponent({
             lang: "pt_br",
         };
     },
+
+    computed: {
+        // eslint-disable-next-line vue/return-in-computed-property
+        bgClass() {
+            if (this.weatherData) {
+                if (this.weatherData.weather[0].icon.endsWith('n')) {
+                    return 'bg-night'
+                } else {
+                    return 'bg-day'
+                }
+            }
+        }
+    },
+
     methods: {
         getLocation() {
+            this.$q.loading.show()
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     console.log("position: ", position);
@@ -81,12 +106,24 @@ export default defineComponent({
             );
         },
         getWeatherByCoords(lat, lon) {
+            this.$q.loading.show()
             this.$axios(
                 `${this.apiUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric&lang=${this.lang}`
             ).then((res) => {
-                console.log("res", res);
+                console.log("res by coords", res);
                 this.weatherData = res.data;
+                this.$q.loading.hide()
             });
+        },
+        getWeatherBySearch(){
+            this.$q.loading.show()
+            this.$axios(
+                `${this.apiUrl}?q=${this.search}&appid=${this.apiKey}&units=metric&lang=${this.lang}`
+            ).then((res) => {
+                console.log("res by city", res);
+                this.weatherData = res.data;
+                this.$q.loading.hide()
+            })
         },
     },
 });
@@ -95,11 +132,17 @@ export default defineComponent({
 <style lang="sass">
 .q-page
     background: linear-gradient(to bottom, #136a8a, #267871)
+    &.bg-night
+        background: linear-gradient(to bottom, #232526, #414345)
+    &.bg-day
+        background: linear-gradient(to bottom, #00b4db, #0083b0)
+
 .degree
     top: -44px
+
 .skyline
     flex: 0 0 140px
-    background: url(..\..\public\skyline.png)
+    background: url(skyline.png)
     background-size: contain
     background-position: center bottom
 </style>
