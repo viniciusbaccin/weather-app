@@ -46,11 +46,11 @@
                     class="col text-h3 text-weight-thin"
                     style="text-transform: uppercase"
                 >
-                    Previsão<br />do Tempo
+                    {{ $t('weatherForecast') }}
                 </div>
                 <q-btn @click="getLocation" class="col" flat>
                     <q-icon left size="3em" name="my_location" />
-                    <div>Minha localização</div>
+                    <div>{{ $t('myLocation') }}</div>
                 </q-btn>
             </div>
         </template>
