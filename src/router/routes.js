@@ -9,16 +9,6 @@ const routes = [
                 name: "Weather",
                 component: () => import("pages/WeatherPage.vue"),
             },
-            {
-                path: "map",
-                name: "Map",
-                component: () => import("pages/MapPage.vue"),
-            },
-            {
-                path: "nasa",
-                name: "Nasa",
-                component: () => import("pages/NasaPage.vue"),
-            },
         ],
     },
 

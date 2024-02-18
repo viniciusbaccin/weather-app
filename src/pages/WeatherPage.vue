@@ -1,5 +1,6 @@
 <template>
     <q-page :class="bgClass">
+        <HeaderPage></HeaderPage>
         <div style="height: calc(100vh - 60px)">
             <div class="flex flex-center q-pt-xl q-px-md">
                 <q-input
@@ -77,7 +78,7 @@
                     </div>
 
                     <div
-                        class="text-h3 text-center text-white titleStyle"
+                        class="text-h3 text-center text-primary titleStyle"
                         style="max-width: 250px"
                     >
                         {{ $t("weatherForecast") }}
@@ -101,9 +102,14 @@
 
 <script>
 import { defineComponent } from "vue";
+import HeaderPage from "src/components/HeaderPage.vue";
 
 export default defineComponent({
     name: "WeatherPage",
+
+    components: {
+        HeaderPage,
+    },
 
     data() {
         return {
@@ -111,7 +117,7 @@ export default defineComponent({
             weatherData: null,
             lat: null,
             lon: null,
-            apiUrl: "https://api.openweathermap.org/data/2.5/weather",
+            apiUrl: "https://api.openweathermap.org/data/2.5/weather", //forecast
             apiKey: "ded1a7724cbf8d3512230a1f3ac4b6b6",
             lang: "pt_br",
         };
@@ -124,7 +130,7 @@ export default defineComponent({
                 if (this.weatherData.weather[0].icon.endsWith("n")) {
                     return "bg-night";
                 } else {
-                    return "bg-day";
+                    return "";
                 }
             }
         },
@@ -150,7 +156,7 @@ export default defineComponent({
             this.$axios(
                 `${this.apiUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric&lang=${this.lang}`
             ).then((res) => {
-                console.log("res by coords", res);
+                console.log("res by coords", res.data);
                 this.weatherData = res.data;
                 this.$q.loading.hide();
             });
@@ -160,7 +166,7 @@ export default defineComponent({
             this.$axios(
                 `${this.apiUrl}?q=${this.search}&appid=${this.apiKey}&units=metric&lang=${this.lang}`
             ).then((res) => {
-                console.log("res by city", res);
+                console.log("res by city", res.data);
                 this.weatherData = res.data;
                 this.$q.loading.hide();
             });
@@ -171,24 +177,26 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .q-page {
-    /* background-image: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1124&q=100"); */
-    background: rgb(18, 61, 70);
+    background: rgb(39, 66, 121);
     background: linear-gradient(
-        0deg,
-        rgba(18, 61, 70, 1) 0%,
-        rgba(22, 45, 55, 1) 64%,
-        rgba(23, 39, 49, 1) 84%,
-        rgba(25, 30, 41, 1) 100%
+        180deg,
+        rgba(39, 66, 121, 1) 0%,
+        rgba(56, 94, 159, 1) 20%,
+        rgba(84, 123, 188, 1) 52%,
+        rgba(149, 175, 208, 1) 81%,
+        rgba(184, 198, 216, 1) 100%
     );
-    background-position: center;
-    background-size: cover;
 
     &.bg-night {
-        background: linear-gradient(to bottom, #232526, #414345);
-    }
-
-    &.bg-day {
-        background: linear-gradient(to bottom, #00b4db, #0083b0);
+        background: rgb(35, 37, 38);
+        background: linear-gradient(
+            180deg,
+            rgba(35, 37, 38, 1) 0%,
+            rgba(65, 67, 69, 1) 29%,
+            rgba(97, 99, 103, 1) 66%,
+            rgba(161, 163, 168, 1) 89%,
+            rgba(204, 204, 204, 1) 100%
+        );
     }
 }
 
