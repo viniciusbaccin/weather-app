@@ -2,30 +2,22 @@
     <q-page :class="bgClass">
         <HeaderPage></HeaderPage>
         <div style="height: calc(100vh - 60px)">
-            <div class="flex flex-center q-pt-xl q-px-md">
+            <div class="row flex-center">
                 <q-input
                     v-model="search"
                     @keyup.enter="getWeatherBySearch"
-                    placeholder="Pesquisar localização"
-                    bg-color="white"
+                    :placeholder="$t('searchLocation')"
+                    :bg-color="$q.dark.isActive ? 'dark' : 'white'"
                     rounded
                     outlined
                     standout
                     dense
                     style="width: 500px"
+                    class="search-input"
                 >
                     <template v-slot:prepend>
                         <q-icon name="location_on" />
                     </template>
-
-                    <!-- <template v-slot:prepend>
-                        <q-icon
-                            @click="getLocation"
-                            name="location_on"
-                        />
-                        <q-tooltip>Localização atual</q-tooltip>
-                    </template> -->
-
                     <template v-slot:append>
                         <q-btn
                             @click="getWeatherBySearch"
@@ -34,7 +26,7 @@
                             flat
                             icon="search"
                         />
-                        <q-tooltip>Pesquisar</q-tooltip>
+                        <q-tooltip> {{ $t('search') }} </q-tooltip>
                     </template>
                 </q-input>
             </div>
@@ -67,9 +59,10 @@
 
             <div v-else class="q-pa-xl" style="height: calc(100vh - 140px)">
                 <div
-                    class="fit column justify-evenly items-center content-center"
+                    class=""
+                    :class="positionStyle"
                 >
-                    <div>
+                    <div :class="contentStyle">
                         <q-img
                             alt="animation"
                             src="../../public/animations/homeAnimation.svg"
@@ -78,22 +71,22 @@
                     </div>
 
                     <div
-                        class="text-h3 text-center text-primary titleStyle"
-                        style="max-width: 250px"
+                        class="text-h3 text-primary titleStyle uppercase"
+                        :class="$q.screen.lt.sm ? 'text-center' : ''"
+                        style="max-width: 280px;"
                     >
                         {{ $t("weatherForecast") }}
                     </div>
-
-                    <div>
-                        <q-btn
-                            @click="getLocation"
-                            class="bg-white"
-                            outline
-                            rounded
-                            icon="my_location"
-                            :label="$t('myLocation')"
-                        />
-                    </div>
+                </div>
+                <div class="row flex-center" :class="$q.screen.lt.sm ? '' : 'q-pt-lg'">
+                    <q-btn
+                        @click="getLocation"
+                        :class="`${$q.dark.isActive ? 'bg-dark' : 'bg-white'}`"
+                        outline
+                        rounded
+                        icon="my_location"
+                        :label="$t('myLocation')"
+                    />
                 </div>
             </div>
         </div>
@@ -134,6 +127,16 @@ export default defineComponent({
                 }
             }
         },
+        positionStyle(){
+            return this.$q.screen.lt.sm
+                ? 'fit column flex-center content-center'
+                : 'fit flex flex-center'
+        },
+        contentStyle() {
+            return this.$q.screen.lt.sm
+                ? 'q-pb-xl'
+                : 'q-pr-lg'
+        },
     },
 
     methods: {
@@ -160,6 +163,7 @@ export default defineComponent({
                 this.weatherData = res.data;
                 this.$q.loading.hide();
             });
+            console.log(this.$i18n);
         },
         getWeatherBySearch() {
             this.$q.loading.show();
@@ -200,14 +204,11 @@ export default defineComponent({
     }
 }
 
-.my-card {
-    width: 100%;
-    max-width: 350px;
-    height: 75%;
-    backdrop-filter: blur(10px) saturate(140%);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
-    background-color: rgba(50, 79, 85, 0.6);
-    border-radius: 12px;
+body.screen--xs {
+    .search-input {
+        max-width: 80%;
+        padding-top: 30px;
+    }
 }
 
 .degree {
@@ -216,6 +217,7 @@ export default defineComponent({
 
 .titleStyle {
     font-family: "Montserrat", sans-serif;
-    font-weight: 700;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 </style>
