@@ -9,7 +9,6 @@ const i18n = createI18n({
 })
 
 export default boot(({app}) => {
-    localStorage.setItem("language", 'pt-BR');
     app.use(i18n)
 })
 
