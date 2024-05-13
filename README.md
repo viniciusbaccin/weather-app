@@ -1,7 +1,7 @@
 # Weather App (weather-app)
 
 A Quasar and Vue Project <br>
-[Demo](https://weather-app-baccin.vercel.app/)
+Demo: [Weather App](https://weather-app-baccin.vercel.app/)
 
 ## Install the dependencies
 ```bash
